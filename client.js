@@ -1,21 +1,35 @@
-// const net = require('net');
-// //connecting client to server
-// const client = net.connect({ port: 8080 }, () => {
+//Load library
+const net = require('net');
+const host = process.argv[2].split("") //www.google.com
+// const path = host + "/" //www.google.com/
+// const pathTo = path.split('.')[2] // com/
+const uri;
 
-// });
-// //Importing message from server
-// client.on('data', (data) => {
-//   console.log("connected client")
-//   process.stdout.write(data);
+for(var i = 0; i < host.length; i++){
+  if(host[i] === "/"){
+    let slash = host.indexOf('/')
+    let getUri = host.slice(slash, host.length)
+    let joinUri = getUri.join("")
+    console.log("THIS IS URI", joinUri)
+  }
+}
 
-//   // client.write('Host: www.devleague.com\n User-Agent: 0.0.0.0\n Date: Wed, 8 Jul 2015 11:12:31 GMT')
+//connecting client to server
+const client = net.connect({ port: 80, host: process.argv[2]}, () => {
 
-// });
+client.write(`GET / HTTP/1.1
+Host: ${host}
+Connection: keep-alive
+Date: ${new Date().toUTCString()}
 
-// //sending message to server
-// process.stdin.on('readable', () => {
-//   let chuck = process.stdin.read()
-//   if(chuck !== null){
-//     client.write(chuck)
-//   }
-// });
+`)
+  //Importing message from server
+  client.on('data', (data) => {
+      process.stdout.write(data.toString());
+
+  });
+
+});
+
+
+
